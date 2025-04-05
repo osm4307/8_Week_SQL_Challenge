@@ -77,13 +77,11 @@ ORDER BY customer_id;
 ```
 Answer: 
 
-customer_id, price
-
-A	76
-
-B	74
-
-C	36
+| customer_id | price       |
+| ----------- | ----------- |
+| A           | 76          |
+| B           | 74          |
+| C           | 36          |
 
 #### 2. How many days has each customer visited the restaurant?
 ```
@@ -96,13 +94,11 @@ ORDER BY customer_id;
 ```
 Answer: 
 
-customer_id, visited
-
-A	4
-
-B	6
-
-C	2
+| customer_id | visited     |
+| ----------- | ----------- |
+| A           | 4           |
+| B           | 6           |
+| C           | 2           |
 
 #### 3. What was the first item from the menu purchased by each customer?
 ```
@@ -126,6 +122,13 @@ curry	B	2021-01-01
 
 ramen	C	2021-01-01
 
+| product_name | customer_id | order_date |
+| ------------ | ----------- | ---------- |
+| sushi        | A           | 2021-01-01 |
+| curry        | A           | 2021-01-01 |
+| curry        | B           | 2021-01-01 |
+| ramen        | C           | 2021-01-01 |
+
 ```
 -- Query I found on Google
 WITH ordered_items AS
@@ -147,7 +150,32 @@ B	2021-01-01	curry
 C	2021-01-01	ramen
 C	2021-01-01	ramen
 
+| customer_id | order_date | product_name |
+| ------------ | ----------- | ---------- |
+| A        | 2021-01-01           | sushi
+| A        | 2021-01-01           | curry
+| B        | 2021-01-01           | ramen
+| C        | 2021-01-01           | ramen
+| C        | 2021-01-01           | ramen
+
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+```
+SELECT 
+	product_name,
+    COUNT(product_name) AS Most_Purchased
+FROM sales
+	INNER JOIN menu
+    ON sales.product_id = menu.product_id
+GROUP BY product_name
+ORDER BY Most_Purchased DESC
+LIMIT 1;
+```
+Answer:
+
+| product_name | Most_Purchased
+| ------------ | ----------- 
+| ramen        | 8      
+
 -- 5. Which item was the most popular for each customer?
 -- 6. Which item was purchased first by the customer after they became a member?
 -- 7. Which item was purchased just before the customer became a member?
