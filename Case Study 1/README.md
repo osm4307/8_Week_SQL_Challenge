@@ -112,16 +112,6 @@ ORDER BY customer_id;
 ```
 Answer:
 
-product_name, customer_id, order_date
-
-sushi	A	2021-01-01
-
-curry	A	2021-01-01
-
-curry	B	2021-01-01
-
-ramen	C	2021-01-01
-
 | product_name | customer_id | order_date |
 | ------------ | ----------- | ---------- |
 | sushi        | A           | 2021-01-01 |
@@ -142,21 +132,6 @@ SELECT
 FROM ordered_items 
 WHERE rnk = 1;
 ```
-Answer:
-customer_id, order_date, product_name
-A	2021-01-01	sushi
-A	2021-01-01	curry
-B	2021-01-01	curry
-C	2021-01-01	ramen
-C	2021-01-01	ramen
-
-| customer_id | order_date | product_name |
-| ------------ | ----------- | ---------- |
-| A        | 2021-01-01           | sushi
-| A        | 2021-01-01           | curry
-| B        | 2021-01-01           | ramen
-| C        | 2021-01-01           | ramen
-| C        | 2021-01-01           | ramen
 
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 ```
@@ -177,6 +152,32 @@ Answer:
 | ramen        | 8      
 
 -- 5. Which item was the most popular for each customer?
+-- 각 손님별 가장 많이 팔린 아이템? customer, product_name
+```
+WITH cte_item AS 
+(SELECT 
+	customer_id,
+	product_name, 
+    order_date,
+    RANK() OVER(PARTITION BY customer_id ORDER BY order_date) AS rnk
+    FROM sales
+		INNER JOIN menu
+		ON sales.product_id = menu.product_id)
+
+SELECT customer_id, order_date, product_name
+FROM cte_item
+WHERE rnk = 1;
+```
+Answer:
+
+| customer_id | order_date | product_name |
+| ------------ | ----------- | ---------- |
+| A        | 2021-01-01           | sushi |
+| A        | 2021-01-01           | curry |
+| B        | 2021-01-01           | curry |
+| C        | 2021-01-01           | ramen |
+| C        | 2021-01-01           | ramen |
+
 -- 6. Which item was purchased first by the customer after they became a member?
 -- 7. Which item was purchased just before the customer became a member?
 -- 8. What is the total items and amount spent for each member before they became a member?
